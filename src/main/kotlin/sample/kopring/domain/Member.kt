@@ -1,0 +1,26 @@
+package sample.kopring.domain
+
+import javax.persistence.*
+
+@Entity
+class Member(
+    var username : String,
+    var age: Int?= null,
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "TEAM_ID")
+    var team: Team?= null
+){
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "MEMBER_ID")
+    var id: Long = 0
+
+    override fun toString(): String {
+        return "Member(id=$id, age=$age)"
+    }
+
+    fun changeTeam(team: Team) {
+        this.team = team
+        team.members.add(this)
+    }
+}
