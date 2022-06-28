@@ -24,7 +24,7 @@ class MemberJpaRepository {
         em.remove(member)
     }
 
-    fun findAll(): MutableList<Member?>? {
+    fun findAll(): List<Member> {
         return em.createQuery("select m from Member m", Member::class.java)
             .resultList
     }

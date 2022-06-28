@@ -1,7 +1,7 @@
 package sample.kopring.domain
 
-import org.assertj.core.api.AbstractComparableAssert
 import org.assertj.core.api.Assertions
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
@@ -11,6 +11,7 @@ import sample.kopring.repository.MemberJpaRepository
 import javax.persistence.EntityManager
 import javax.persistence.PersistenceContext
 import javax.transaction.Transactional
+import org.assertj.core.api.Assertions.*
 
 @SpringBootTest
 @Transactional
@@ -73,25 +74,23 @@ internal class MemberTest {
         val findById1 = memberJpaRepository.findById(member1.id)
         val findById2 = memberJpaRepository.findById(member2.id)
 
-        assertEquals(findById1, member1)
-        assertEquals(findById2, member2)
+        assertThat(findById1).isEqualTo(member1)
+        assertThat(findById2).isEqualTo(member2)
 
         // 리스트 조회 검증
-//        val all : MutableList<Member?>? = memberJpaRepository.findAll()
-//        if (all != null)  assertEquals(all.size, 2L)
-
+        val findAll = memberJpaRepository.findAll()
+        assertThat(findAll.size).isEqualTo(2)
 
         // 카운트 검증
         var count : Long = memberJpaRepository.count()
-//        assertEquals(count, 2L)
         println("count = $count")
-
+        assertThat(count).isEqualTo(2)
 
         // 삭제 검증
         memberJpaRepository.delete(member1)
         memberJpaRepository.delete(member2)
-
-        var deleteCount : Long = memberJpaRepository.count()
-        println("deleteCount = $deleteCount")
+//
+        var deleteCount = memberJpaRepository.count()
+        assertThat(deleteCount).isEqualTo(0)
     }
 }
