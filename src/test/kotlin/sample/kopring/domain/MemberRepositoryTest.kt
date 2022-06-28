@@ -1,19 +1,17 @@
 package sample.kopring.domain
 
+import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import sample.kopring.repository.MemberRepository
 import javax.transaction.Transactional
-import org.assertj.core.api.Assertions.*
 
 @SpringBootTest
 @Transactional
 class MemberRepositoryTest {
 
-    @Autowired
-    lateinit var memberRepository : MemberRepository;
-
+    @Autowired lateinit var memberRepository : MemberRepository;
 
     @Test
     fun basicCRUD() {
@@ -46,5 +44,18 @@ class MemberRepositoryTest {
 //
         var deleteCount = memberRepository.count()
         assertThat(deleteCount).isEqualTo(0)
+    }
+
+    @Test
+    fun testNameQuery(){
+        var m1 = Member("AAA", 10)
+        var m2 = Member("BBB", 20)
+
+        memberRepository.save(m1)
+        memberRepository.save(m2)
+
+        val result: List<Member> = memberRepository.findByUsername2("AAA")
+        var findMember :Member = result.get(0)
+        assertThat(findMember).isEqualTo(m1)
     }
 }

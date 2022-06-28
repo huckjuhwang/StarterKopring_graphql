@@ -108,4 +108,19 @@ internal class MemberTest {
         assertThat(result.get(0).age).isEqualTo(m2.age)
         assertThat(result.size).isEqualTo(1)
     }
+
+    @Test
+    fun testNameQuery(){
+        var m1 = Member("AAA", 10)
+        var m2 = Member("BBB", 20)
+
+        memberJpaRepository.save(m1)
+        memberJpaRepository.save(m2)
+
+        val result: List<Member> = memberJpaRepository.findByUsername("AAA")
+        var findMember :Member = result.get(0)
+        assertThat(findMember).isEqualTo(m1)
+    }
+
+
 }
