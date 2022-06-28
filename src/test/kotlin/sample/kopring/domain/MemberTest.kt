@@ -15,6 +15,7 @@ import org.assertj.core.api.Assertions.*
 
 @SpringBootTest
 @Transactional
+@Rollback(false)
 internal class MemberTest {
 
     @PersistenceContext
@@ -92,5 +93,19 @@ internal class MemberTest {
 //
         var deleteCount = memberJpaRepository.count()
         assertThat(deleteCount).isEqualTo(0)
+    }
+
+    @Test
+    fun findByUsernameAndAgeGreaterThen() {
+        var m1 = Member("AAA", 10)
+        var m2 = Member("AAAa", 20)
+
+        memberJpaRepository.save(m1)
+        memberJpaRepository.save(m2)
+
+        val result :List<Member> = memberJpaRepository.findByUsernameAndAgeGreaterThen("AAAa", 15)
+        assertThat(result.get(0).username).isEqualTo(m2.username)
+        assertThat(result.get(0).age).isEqualTo(m2.age)
+        assertThat(result.size).isEqualTo(1)
     }
 }

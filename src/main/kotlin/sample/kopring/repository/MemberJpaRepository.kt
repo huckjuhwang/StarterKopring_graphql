@@ -33,4 +33,14 @@ class MemberJpaRepository {
         return em.createQuery("select count(m) from Member m", Long::class.java)
             .singleResult
     }
+
+    // 회원과 이름과 나이가 몇살 이상
+    fun findByUsernameAndAgeGreaterThen(
+        username : String, age : Int
+    ): List<Member> {
+        return em.createQuery("select m from Member m where m.username = :username and m.age > :age", Member::class.java)
+            .setParameter("username", username)
+            .setParameter("age", age)
+            .resultList
+    }
 }
