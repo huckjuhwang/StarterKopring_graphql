@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import sample.kopring.repository.MemberRepository
+import sample.kopring.repository.TeamRepository
+import java.util.*
 import javax.transaction.Transactional
 
 @SpringBootTest
@@ -12,6 +14,7 @@ import javax.transaction.Transactional
 class MemberRepositoryTest {
 
     @Autowired lateinit var memberRepository : MemberRepository;
+    @Autowired lateinit var teamRepository: TeamRepository;
 
     @Test
     fun basicCRUD() {
@@ -57,5 +60,82 @@ class MemberRepositoryTest {
         val result: List<Member> = memberRepository.findByUsername2("AAA")
         var findMember :Member = result.get(0)
         assertThat(findMember).isEqualTo(m1)
+    }
+
+
+    @Test
+    fun testQuery(){
+        var m1 = Member("AAA", 10)
+        var m2 = Member("BBB", 20)
+
+        memberRepository.save(m1)
+        memberRepository.save(m2)
+
+        val result = memberRepository.findUser("AAA", 10)
+        assertThat(result.get(0)).isEqualTo(m1)
+    }
+
+    @Test
+    fun findUsernameList(){
+        var m1 = Member("AAA", 10)
+        var m2 = Member("BBB", 20)
+
+        memberRepository.save(m1)
+        memberRepository.save(m2)
+
+        val result : List<String> = memberRepository.findUsernameList()
+
+        for (s in result) {
+            println("s = ${s}")
+        }
+    }
+
+
+    @Test
+    fun findMemberDto(){
+        var team = Team("teamA")
+        teamRepository.save(team)
+
+        var m1 = Member("AAA", 10)
+        m1.team = team
+        memberRepository.save(m1)
+
+        val result  = memberRepository.findMemberDto()
+        for (s in result) {
+            println("s = ${s}")
+        }
+    }
+
+    @Test
+    fun findByNames(){
+        val m1 = Member("AAA", 10)
+        val m2 = Member("BBB", 20)
+
+        memberRepository.save(m1)
+        memberRepository.save(m2)
+
+//        val result: List<Member> = memberRepository.findByNames(listOf("AAA", "BBB"))
+        val result: List<Member> = memberRepository.findByNames(names = Arrays.asList("AAA", "BBB"))
+
+        for (s in result) {
+            println("s = ${s}")
+        }
+    }
+
+    @Test
+    fun returnType() {
+        val m1 = Member("AAA", 10)
+        val m2 = Member("BBB", 20)
+        memberRepository.save(m1)
+        memberRepository.save(m2)
+
+        /**
+         * Collection은 결과가 없어도, null이 나오지 않고, 빈 컬렉션이 나오게 된다. ( 중요 )
+         */
+        val listMember: List<Member> = memberRepository.findListByUsername("ddddd")
+//        val member: Member = memberRepository.findMemberByUsername("AAA")
+//        val optionalMember: Optional<Member> = memberRepository.findOptionalByUsername("AAA")
+
+        println("findMemberByUsername = ${listMember}")
     }
 }
